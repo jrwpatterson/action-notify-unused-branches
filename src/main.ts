@@ -1,19 +1,18 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import {debug, setFailed} from '@actions/core'
+import {GitHub, context} from '@actions/github'
+import {oldBranchNotify} from './old-branch-notify'
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`)
+  const token = process.env.GITHUB_TOKEN
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+  if (!token) throw ReferenceError('No Token found')
 
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    core.setFailed(error.message)
-  }
+  await oldBranchNotify({
+    debug,
+    setFailed,
+    octokit: new GitHub(token),
+    context
+  })
 }
 
 run()

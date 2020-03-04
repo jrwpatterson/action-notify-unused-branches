@@ -508,8 +508,9 @@ function oldBranchNotify(actionContext) {
             const response = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false }));
             const branches = response.data;
             actionContext.debug(`found ${branches.length} branches`);
-            const branchRequests = branches.map(branch => actionContext
-                .octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name })));
+            const branchRequests = branches.map((branch) => __awaiter(this, void 0, void 0, function* () {
+                return actionContext.octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name }));
+            }));
             const branchExtraInfo = yield Promise.all(branchRequests);
             const branchWithAuthor = branchExtraInfo.map(value => {
                 return {
@@ -518,14 +519,14 @@ function oldBranchNotify(actionContext) {
                 };
             });
             const oldBranches = branchWithAuthor.filter(value => {
-                return Date.parse(value.author.date) < Date.now() - (1000 * 60 * 60 * 24 * 90);
+                return (Date.parse(value.author.date) < Date.now() - 1000 * 60 * 60 * 24 * 90);
             });
             actionContext.debug(`found ${oldBranches.length} branches older than 90 days old`);
             const formattedBranches = oldBranches.map(value => {
                 return `${value.name}: last commit by @${value.author.name}`;
             });
             if (oldBranches.length > 0) {
-                yield actionContext.octokit.issues.create(Object.assign(Object.assign({}, repoInfo), { title: 'Old branches ' + new Date().toDateString().slice(0, 15), body: '## Branches older than 90 days\n' + formattedBranches.join('\n'), assignees: Array.from(new Set(oldBranches.map(value => value.author.name))) }));
+                yield actionContext.octokit.issues.create(Object.assign(Object.assign({}, repoInfo), { title: `Old branches ${new Date().toDateString().slice(0, 15)}`, body: `## Branches older than 90 days\n${formattedBranches.join('\n')}`, assignees: Array.from(new Set(oldBranches.map(value => value.author.name))) }));
             }
         }
         catch (error) {
@@ -2069,9 +2070,11 @@ const github_1 = __webpack_require__(469);
 const old_branch_notify_1 = __webpack_require__(71);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        core_1.debug('start action');
         const token = process.env.GITHUB_TOKEN;
         if (!token)
             throw ReferenceError('No Token found');
+        core_1.debug('attempt to run action');
         yield old_branch_notify_1.oldBranchNotify({
             debug: core_1.debug,
             setFailed: core_1.setFailed,

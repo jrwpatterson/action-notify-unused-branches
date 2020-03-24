@@ -1,6 +1,10 @@
 name: 'Notify Unused Branches'
 description: 'Creates a GitHub Issue with a list of all branches older than 90 days'
 author: 'Arup Group'
+inputs:
+  daysOld:
+    description: 'How many days old the branch is'
+    default: 30
 branding:
   icon: 'git-branch'
   color: 'orange'

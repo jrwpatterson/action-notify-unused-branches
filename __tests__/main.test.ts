@@ -177,6 +177,7 @@ beforeEach(async () => {
   await oldBranchNotify({
     octokit,
     context,
+    getInput: jest.fn().mockReturnValue(30),
     debug: jest.fn(),
     setFailed: jest.fn()
   })

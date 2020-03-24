@@ -33,9 +33,14 @@ export async function oldBranchNotify(
       }
     })
 
+    const numberOfDaysToLookIntoPast = parseInt(
+      actionContext.getInput('daysOld')
+    )
+
     const oldBranches = branchWithAuthor.filter(value => {
       return (
-        Date.parse(value.author.date) < Date.now() - 1000 * 60 * 60 * 24 * 90
+        Date.parse(value.author.date) <
+        Date.now() - 1000 * 60 * 60 * 24 * numberOfDaysToLookIntoPast
       )
     })
 

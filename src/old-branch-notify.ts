@@ -10,7 +10,8 @@ export async function oldBranchNotify(
 
     const response = await actionContext.octokit.repos.listBranches({
       ...repoInfo,
-      protected: false
+      protected: false,
+      per_page: 100
     })
 
     const branches: Octokit.ReposListBranchesResponse = response.data
@@ -29,7 +30,8 @@ export async function oldBranchNotify(
     const branchWithAuthor = branchExtraInfo.map(value => {
       return {
         author: value.data.commit.commit.author,
-        name: value.data.name
+        name: value.data.name,
+        login: value.data.commit.author.login
       }
     })
 
@@ -58,7 +60,7 @@ export async function oldBranchNotify(
         title: `Old branches ${new Date().toDateString().slice(0, 15)}`,
         body: `## Branches older than 90 days\n${formattedBranches.join('\n')}`,
         assignees: Array.from(
-          new Set(oldBranches.map(value => value.author.name))
+          new Set(oldBranches.map(value => value.login))
         )
       })
     }

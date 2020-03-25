@@ -196,7 +196,8 @@ test('expect list branches to be called', () => {
   expect(listBranchesSpy).toHaveBeenCalledWith({
     protected: false,
     owner: 'some-owner',
-    repo: 'some-repo'
+    repo: 'some-repo',
+    per_page: 100
   })
 })
 
@@ -205,7 +206,7 @@ test('expect an issue to be created', () => {
     repo: 'some-repo',
     owner: 'some-owner',
     title: 'Old branches ' + new Date().toDateString().slice(0, 15),
-    assignees: ['The Octocat'],
+    assignees: ['octocat'],
     body: '## Branches older than 90 days\nmaster: last commit by @The Octocat'
   })
 })

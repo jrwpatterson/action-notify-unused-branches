@@ -11,6 +11,7 @@ export async function oldBranchNotify(
     const response = await actionContext.octokit.repos.listBranches({
       ...repoInfo,
       protected: false,
+      // eslint-disable-next-line @typescript-eslint/camelcase
       per_page: 100
     })
 
@@ -59,9 +60,7 @@ export async function oldBranchNotify(
         ...repoInfo,
         title: `Old branches ${new Date().toDateString().slice(0, 15)}`,
         body: `## Branches older than 90 days\n${formattedBranches.join('\n')}`,
-        assignees: Array.from(
-          new Set(oldBranches.map(value => value.login))
-        )
+        assignees: Array.from(new Set(oldBranches.map(value => value.login)))
       })
     }
   } catch (error) {

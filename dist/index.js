@@ -1995,7 +1995,9 @@ function oldBranchNotify(actionContext) {
         try {
             actionContext.debug('Get a list of all the branches');
             const repoInfo = actionContext.context.repo;
-            const response = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false }));
+            const response = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, 
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                per_page: 100 }));
             const branches = response.data;
             actionContext.debug(`found ${branches.length} branches`);
             const branchRequests = branches.map((branch) => __awaiter(this, void 0, void 0, function* () {
@@ -2005,7 +2007,8 @@ function oldBranchNotify(actionContext) {
             const branchWithAuthor = branchExtraInfo.map(value => {
                 return {
                     author: value.data.commit.commit.author,
-                    name: value.data.name
+                    name: value.data.name,
+                    login: value.data.commit.author.login
                 };
             });
             const numberOfDaysToLookIntoPast = parseInt(actionContext.getInput('daysOld'));
@@ -2018,7 +2021,7 @@ function oldBranchNotify(actionContext) {
                 return `${value.name}: last commit by @${value.author.name}`;
             });
             if (oldBranches.length > 0) {
-                yield actionContext.octokit.issues.create(Object.assign(Object.assign({}, repoInfo), { title: `Old branches ${new Date().toDateString().slice(0, 15)}`, body: `## Branches older than 90 days\n${formattedBranches.join('\n')}`, assignees: Array.from(new Set(oldBranches.map(value => value.author.name))) }));
+                yield actionContext.octokit.issues.create(Object.assign(Object.assign({}, repoInfo), { title: `Old branches ${new Date().toDateString().slice(0, 15)}`, body: `## Branches older than 90 days\n${formattedBranches.join('\n')}`, assignees: Array.from(new Set(oldBranches.map(value => value.login))) }));
             }
         }
         catch (error) {

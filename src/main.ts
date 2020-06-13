@@ -1,5 +1,6 @@
 import {debug, setFailed, getInput} from '@actions/core'
-import {GitHub, context} from '@actions/github'
+import * as GitHub from '@actions/github'
+import {context} from '@actions/github'
 import {oldBranchNotify} from './old-branch-notify'
 
 async function run(): Promise<void> {
@@ -11,7 +12,7 @@ async function run(): Promise<void> {
     debug,
     setFailed,
     getInput,
-    octokit: new GitHub(token),
+    octokit: GitHub.getOctokit(token),
     context
   })
 }

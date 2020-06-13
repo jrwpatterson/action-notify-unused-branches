@@ -1,12 +1,12 @@
 import {oldBranchNotify} from '../src/old-branch-notify'
-import {GitHub} from '@actions/github'
+import * as GitHub from '@actions/github'
 import {Context} from '@actions/github/lib/context'
-import {Octokit} from '@octokit/rest'
+import * as OctokitTypes from '@octokit/types'
 
 let context: Context
 let listBranchesData: Array<any>
-let listBranchesResponse: Octokit.AnyResponse
-let getBranchResponse: Octokit.AnyResponse
+let listBranchesResponse: {}
+let getBranchResponse: {}
 let getBranchData: Object
 
 beforeEach(() => {
@@ -66,8 +66,7 @@ beforeEach(() => {
   listBranchesResponse = {
     data: listBranchesData,
     status: 200,
-    headers: headers,
-    [Symbol.iterator]: () => 'test'[Symbol.iterator]()
+    headers: headers
   }
 
   getBranchData = {

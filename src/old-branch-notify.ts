@@ -1,5 +1,4 @@
 import {ActionContext} from './action-context'
-import {Octokit} from '@octokit/rest'
 
 export async function oldBranchNotify(
   actionContext: ActionContext
@@ -11,11 +10,10 @@ export async function oldBranchNotify(
     const response = await actionContext.octokit.repos.listBranches({
       ...repoInfo,
       protected: false,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       per_page: 100
     })
 
-    const branches: Octokit.ReposListBranchesResponse = response.data
+    const branches = response.data
 
     actionContext.debug(`found ${branches.length} branches`)
 

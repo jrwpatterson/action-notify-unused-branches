@@ -1902,13 +1902,13 @@ function oldBranchNotify(actionContext) {
             const excludedAuthor = actionContext.getInput('excludedAuthor');
             const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 100 }));
             actionContext.debug(`found ${listBranchesResponse.data.length} branches`);
-            const branchRequests = listBranchesResponse.data
-                .map((branch) => __awaiter(this, void 0, void 0, function* () {
+            const branchRequests = listBranchesResponse.data.map((branch) => __awaiter(this, void 0, void 0, function* () {
                 return actionContext.octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name }));
             }));
             const branchExtraInfo = yield Promise.all(branchRequests);
             const branchWithAuthor = branchExtraInfo
-                .filter(branch => branch.data.commit.author.login !== excludedAuthor).map(value => {
+                .filter(branch => branch.data.commit.author.login !== excludedAuthor)
+                .map(value => {
                 return {
                     author: value.data.commit.commit.author,
                     name: value.data.name,
@@ -2508,18 +2508,23 @@ const github_1 = __webpack_require__(469);
 const old_branch_notify_1 = __webpack_require__(71);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        core_1.debug('start action');
-        const token = process.env.GITHUB_TOKEN;
-        if (!token)
-            throw ReferenceError('No Token found');
-        core_1.debug('attempt to run action');
-        yield old_branch_notify_1.oldBranchNotify({
-            debug: core_1.debug,
-            setFailed: core_1.setFailed,
-            getInput: core_1.getInput,
-            octokit: GitHub.getOctokit(token),
-            context: github_1.context
-        });
+        try {
+            core_1.debug('start action');
+            const token = process.env.GITHUB_TOKEN;
+            if (!token)
+                throw ReferenceError('No Token found');
+            core_1.debug('attempt to run action');
+            yield old_branch_notify_1.oldBranchNotify({
+                debug: core_1.debug,
+                setFailed: core_1.setFailed,
+                getInput: core_1.getInput,
+                octokit: GitHub.getOctokit(token),
+                context: github_1.context
+            });
+        }
+        catch (error) {
+            core_1.setFailed(error.message);
+        }
     });
 }
 run();

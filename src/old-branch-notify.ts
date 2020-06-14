@@ -46,18 +46,20 @@ export async function oldBranchNotify(
     })
 
     actionContext.debug(
-      `found ${oldBranches.length} branches older than 90 days old`
+      `found ${oldBranches.length} branches older than ${numberOfDaysToLookIntoPast} days old`
     )
 
     const formattedBranches = oldBranches.map(value => {
-      return `${value.name}: last commit by @${value.author.name}`
+      return `${value.name}: last commit by @${value.login}`
     })
 
     if (oldBranches.length > 0) {
       await actionContext.octokit.issues.create({
         ...repoInfo,
         title: `Old branches ${new Date().toDateString().slice(0, 15)}`,
-        body: `## Branches older than 90 days\n${formattedBranches.join('\n')}`,
+        body: `## Branches older than ${numberOfDaysToLookIntoPast} days\n${formattedBranches.join(
+          '\n'
+        )}`,
         assignees: Array.from(new Set(oldBranches.map(value => value.login)))
       })
     }

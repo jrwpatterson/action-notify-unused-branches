@@ -1893,6 +1893,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.oldBranchNotify = void 0;
+const ONE_DAY = 1000 * 60 * 60 * 24;
 function oldBranchNotify(actionContext) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -1915,7 +1916,7 @@ function oldBranchNotify(actionContext) {
             const numberOfDaysToLookIntoPast = parseInt(actionContext.getInput('daysOld'));
             const oldBranches = branchWithAuthor.filter(value => {
                 return (Date.parse(value.author.date) <
-                    Date.now() - 1000 * 60 * 60 * 24 * numberOfDaysToLookIntoPast);
+                    Date.now() - ONE_DAY * numberOfDaysToLookIntoPast);
             });
             actionContext.debug(`found ${oldBranches.length} branches older than ${numberOfDaysToLookIntoPast} days old`);
             const formattedBranches = oldBranches.map(value => {

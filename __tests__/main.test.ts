@@ -14,7 +14,12 @@ let listBranchesResponse: OctokitResponse<ReposListBranchesResponseData>
 let getBranchResponse: OctokitResponse<ReposGetBranchResponseData>
 let getBranchData: ReposGetBranchResponseData
 let issuesCreateResponse: OctokitResponse<IssuesCreateResponseData>
+let listBranchesSpy: jest.SpyInstance
+let getBranchesSpy: jest.SpyInstance
+let createIssueSpy: jest.SpyInstance
+const octokit = GitHub.getOctokit('fakeToken')
 
+// Context coming from github action
 beforeEach(() => {
   context = {
     repo: {
@@ -22,7 +27,10 @@ beforeEach(() => {
       owner: 'some-owner'
     }
   } as Context
+})
 
+// Set up API responses
+beforeEach(() => {
   listBranchesData = [
     {
       name: 'master'
@@ -56,12 +64,8 @@ beforeEach(() => {
   issuesCreateResponse = {} as OctokitResponse<IssuesCreateResponseData>
 })
 
-let listBranchesSpy: jest.SpyInstance
-let getBranchesSpy: jest.SpyInstance
-let createIssueSpy: jest.SpyInstance
-
+// Set API responses in mocks
 beforeEach(async () => {
-  const octokit = GitHub.getOctokit('fakeToken')
   listBranchesSpy = jest
     .spyOn(octokit.repos, 'listBranches')
     .mockResolvedValue(listBranchesResponse)
@@ -71,17 +75,10 @@ beforeEach(async () => {
   createIssueSpy = jest
     .spyOn(octokit.issues, 'create')
     .mockResolvedValue(issuesCreateResponse)
-
-  await oldBranchNotify({
-    octokit,
-    context,
-    getInput: jest.fn().mockReturnValue(30),
-    debug: jest.fn(),
-    setFailed: jest.fn()
-  })
 })
 
-test('expect get branch to to be called', () => {
+test('expect get branch to to be called', async () => {
+  await triggerEvent()
   expect(getBranchesSpy).toHaveBeenCalledWith({
     owner: 'some-owner',
     repo: 'some-repo',
@@ -89,8 +86,8 @@ test('expect get branch to to be called', () => {
   })
 })
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('expect list branches to be called', () => {
+test('expect list branches to be called', async () => {
+  await triggerEvent()
   expect(listBranchesSpy).toHaveBeenCalledWith({
     protected: false,
     owner: 'some-owner',
@@ -99,7 +96,8 @@ test('expect list branches to be called', () => {
   })
 })
 
-test('expect an issue to be created', () => {
+test('expect an issue to be created if includes old branches', async () => {
+  await triggerEvent()
   expect(createIssueSpy).toHaveBeenCalledWith({
     repo: 'some-repo',
     owner: 'some-owner',
@@ -109,3 +107,25 @@ test('expect an issue to be created', () => {
       '## Branches older than 30 days\nmaster: last commit by @peterjgrainger'
   })
 })
+
+test('expect no issues to be created if branch was last commit was today', async () => {
+  getBranchData.commit.commit.author.date = new Date().toString()
+  await triggerEvent()
+  expect(createIssueSpy).not.toHaveBeenCalled()
+})
+
+test('expect no issues to be created if there are no branches', async () => {
+  listBranchesResponse.data = []
+  await triggerEvent()
+  expect(createIssueSpy).not.toHaveBeenCalled()
+})
+
+async function triggerEvent() {
+  await oldBranchNotify({
+    octokit,
+    context,
+    getInput: jest.fn().mockReturnValue(30),
+    debug: jest.fn(),
+    setFailed: jest.fn()
+  })
+}

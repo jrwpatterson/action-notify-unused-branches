@@ -1,23 +1,27 @@
 import {ActionContext} from './action-context'
 
+const ONE_DAY = 1000 * 60 * 60 * 24
+
 export async function oldBranchNotify(
   actionContext: ActionContext
 ): Promise<void> {
   try {
-    actionContext.debug('Get a list of all the branches')
-    const repoInfo = actionContext.context.repo
 
-    const response = await actionContext.octokit.repos.listBranches({
+    const repoInfo = actionContext.context.repo
+    const numberOfDaysToLookIntoPast = parseInt(
+      actionContext.getInput('daysOld')
+    )
+
+    
+    const listBranchesResponse = await actionContext.octokit.repos.listBranches({
       ...repoInfo,
       protected: false,
       per_page: 100
     })
 
-    const branches = response.data
+    actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
 
-    actionContext.debug(`found ${branches.length} branches`)
-
-    const branchRequests = branches.map(async branch =>
+    const branchRequests = listBranchesResponse.data.map(async branch =>
       actionContext.octokit.repos.getBranch({
         ...repoInfo,
         branch: branch.name
@@ -34,14 +38,10 @@ export async function oldBranchNotify(
       }
     })
 
-    const numberOfDaysToLookIntoPast = parseInt(
-      actionContext.getInput('daysOld')
-    )
-
     const oldBranches = branchWithAuthor.filter(value => {
       return (
         Date.parse(value.author.date) <
-        Date.now() - 1000 * 60 * 60 * 24 * numberOfDaysToLookIntoPast
+        Date.now() - ONE_DAY * numberOfDaysToLookIntoPast
       )
     })
 

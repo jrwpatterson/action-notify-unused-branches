@@ -18,6 +18,8 @@ let listBranchesSpy: jest.SpyInstance
 let getBranchesSpy: jest.SpyInstance
 let createIssueSpy: jest.SpyInstance
 const octokit = GitHub.getOctokit('fakeToken')
+let getInput: (parameter: string) => string
+let excludedAuthor: string
 
 // Context coming from github action
 beforeEach(() => {
@@ -77,6 +79,10 @@ beforeEach(async () => {
     .mockResolvedValue(issuesCreateResponse)
 })
 
+beforeEach(async () => {
+  getInput = (input: string) => (input === 'daysOld' ? '30' : excludedAuthor)
+})
+
 test('expect get branch to to be called', async () => {
   await triggerEvent()
   expect(getBranchesSpy).toHaveBeenCalledWith({
@@ -120,11 +126,23 @@ test('expect no issues to be created if there are no branches', async () => {
   expect(createIssueSpy).not.toHaveBeenCalled()
 })
 
+test('expect no issues to be created if there are no branches', async () => {
+  listBranchesResponse.data = []
+  await triggerEvent()
+  expect(createIssueSpy).not.toHaveBeenCalled()
+})
+
+test('expect no issues to be created if author is excluded', async () => {
+  excludedAuthor = 'peterjgrainger'
+  await triggerEvent()
+  expect(createIssueSpy).not.toHaveBeenCalled()
+})
+
 async function triggerEvent() {
   await oldBranchNotify({
     octokit,
     context,
-    getInput: jest.fn().mockReturnValue(30),
+    getInput: getInput,
     debug: jest.fn(),
     setFailed: jest.fn()
   })

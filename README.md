@@ -6,7 +6,7 @@ If it finds any it will create an issue listing all of the branches and tag the 
 
 ## Installation
 
-To configure the action add the following lines to your `.github/workflows/rebase.yml` workflow file:
+To configure the action add the following lines to your `.github/workflows/old-branches.yml` workflow file:
 
 ```yml
 on:
@@ -21,6 +21,10 @@ jobs:
     steps:
     - name: Old Branch Reminder
       uses: arup-group/action-notify-unused-branches@master
+      with:
+         daysOld: 90
+         excludedAuthor: peterjgrainger
+
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```

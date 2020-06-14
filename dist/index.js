@@ -1897,23 +1897,24 @@ const ONE_DAY = 1000 * 60 * 60 * 24;
 function oldBranchNotify(actionContext) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            actionContext.debug('Get a list of all the branches');
             const repoInfo = actionContext.context.repo;
-            const response = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 100 }));
-            const branches = response.data;
-            actionContext.debug(`found ${branches.length} branches`);
-            const branchRequests = branches.map((branch) => __awaiter(this, void 0, void 0, function* () {
+            const numberOfDaysToLookIntoPast = parseInt(actionContext.getInput('daysOld'));
+            const excludedAuthor = actionContext.getInput('excludedAuthor');
+            const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 100 }));
+            actionContext.debug(`found ${listBranchesResponse.data.length} branches`);
+            const branchRequests = listBranchesResponse.data
+                .map((branch) => __awaiter(this, void 0, void 0, function* () {
                 return actionContext.octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name }));
             }));
             const branchExtraInfo = yield Promise.all(branchRequests);
-            const branchWithAuthor = branchExtraInfo.map(value => {
+            const branchWithAuthor = branchExtraInfo
+                .filter(branch => branch.data.commit.author.login !== excludedAuthor).map(value => {
                 return {
                     author: value.data.commit.commit.author,
                     name: value.data.name,
                     login: value.data.commit.author.login
                 };
             });
-            const numberOfDaysToLookIntoPast = parseInt(actionContext.getInput('daysOld'));
             const oldBranches = branchWithAuthor.filter(value => {
                 return (Date.parse(value.author.date) <
                     Date.now() - ONE_DAY * numberOfDaysToLookIntoPast);

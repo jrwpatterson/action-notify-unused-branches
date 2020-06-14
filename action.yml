@@ -5,6 +5,9 @@ inputs:
   daysOld:
     description: 'How many days old the branch is'
     default: 30
+  excludedAuthor:
+    description: 'An author to excluded from the check'
+    default: ''
 branding:
   icon: 'git-branch'
   color: 'orange'

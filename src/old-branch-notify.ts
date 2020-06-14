@@ -6,18 +6,20 @@ export async function oldBranchNotify(
   actionContext: ActionContext
 ): Promise<void> {
   try {
-
     const repoInfo = actionContext.context.repo
     const numberOfDaysToLookIntoPast = parseInt(
       actionContext.getInput('daysOld')
     )
 
-    
-    const listBranchesResponse = await actionContext.octokit.repos.listBranches({
-      ...repoInfo,
-      protected: false,
-      per_page: 100
-    })
+    const excludedAuthor = actionContext.getInput('excludedAuthor')
+
+    const listBranchesResponse = await actionContext.octokit.repos.listBranches(
+      {
+        ...repoInfo,
+        protected: false,
+        per_page: 100
+      }
+    )
 
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
 
@@ -30,13 +32,15 @@ export async function oldBranchNotify(
 
     const branchExtraInfo = await Promise.all(branchRequests)
 
-    const branchWithAuthor = branchExtraInfo.map(value => {
-      return {
-        author: value.data.commit.commit.author,
-        name: value.data.name,
-        login: value.data.commit.author.login
-      }
-    })
+    const branchWithAuthor = branchExtraInfo
+      .filter(branch => branch.data.commit.author.login !== excludedAuthor)
+      .map(value => {
+        return {
+          author: value.data.commit.commit.author,
+          name: value.data.name,
+          login: value.data.commit.author.login
+        }
+      })
 
     const oldBranches = branchWithAuthor.filter(value => {
       return (

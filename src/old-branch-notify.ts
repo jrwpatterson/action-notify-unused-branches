@@ -33,7 +33,11 @@ export async function oldBranchNotify(
     const branchExtraInfo = await Promise.all(branchRequests)
 
     const branchWithAuthor = branchExtraInfo
-      .filter(branch => branch.data.commit.author.login !== excludedAuthor)
+      .filter(
+        branch =>
+          branch.data.commit.author &&
+          branch.data.commit.author.login !== excludedAuthor
+      )
       .map(value => {
         return {
           author: value.data.commit.commit.author,

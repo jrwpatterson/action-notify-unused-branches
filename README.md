@@ -22,9 +22,8 @@ jobs:
     - name: Old Branch Reminder
       uses: arup-group/action-notify-unused-branches@master
       with:
-         daysOld: 90
-         excludedAuthor: peterjgrainger
-
+        daysOld: 90
+        excludedAuthor: peterjgrainger
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```

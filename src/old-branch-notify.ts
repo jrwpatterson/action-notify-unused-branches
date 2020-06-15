@@ -68,7 +68,13 @@ export async function oldBranchNotify(
         body: `## Branches older than ${numberOfDaysToLookIntoPast} days\n${formattedBranches.join(
           '\n'
         )}`,
-        assignees: Array.from(new Set(oldBranches.map(value => value.login)))
+        assignees: Array.from(
+          new Set(
+            oldBranches
+              .filter(value => value && value.login)
+              .map(value => value.login)
+          )
+        )
       })
     }
   } catch (error) {

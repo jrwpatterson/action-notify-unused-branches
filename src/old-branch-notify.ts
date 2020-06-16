@@ -36,13 +36,13 @@ export async function oldBranchNotify(
       .filter(
         branch =>
           branch.data.commit.author &&
-          branch.data.commit.author.login !== excludedAuthor
+          branch.data.commit.author?.login !== excludedAuthor
       )
       .map(value => {
         return {
           author: value.data.commit.commit.author,
           name: value.data.name,
-          login: value.data.commit.author.login
+          login: value.data.commit.author?.login
         }
       })
 
@@ -58,7 +58,7 @@ export async function oldBranchNotify(
     )
 
     const formattedBranches = oldBranches.map(value => {
-      return `${value.name}: last commit by @${value.login}`
+      return `${value.name}: last commit by @${value?.login}`
     })
 
     if (oldBranches.length > 0) {

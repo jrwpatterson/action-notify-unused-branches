@@ -1,16 +1,16 @@
-name: 'Notify Unused Branches'
-description: 'Creates a GitHub Issue with a list of all branches older than 90 days'
-author: 'Arup Group'
+name: "Notify Unused Branches"
+description: "Creates a GitHub Issue with a list of all branches older than 90 days"
+author: "Arup Group"
 inputs:
   daysOld:
-    description: 'How many days old the branch is'
+    description: "How many days old the branch is"
     default: 30
   excludedAuthor:
-    description: 'An author to excluded from the check'
-    default: ''
+    description: "An author to excluded from the check"
+    default: ""
 branding:
-  icon: 'git-branch'
-  color: 'orange'
+  icon: "git-branch"
+  color: "orange"
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node12"
+  main: "lib/main.js"

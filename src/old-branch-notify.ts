@@ -30,8 +30,10 @@ export async function oldBranchNotify(
       })
     )
 
-    const branchExtraInfo = await Promise.all(branchRequests)
+    actionContext.debug(`branchRequests ${branchRequests.length} branches`)
 
+    const branchExtraInfo = await Promise.all(branchRequests)
+    actionContext.debug(`starting branch with author`)
     const branchWithAuthor = branchExtraInfo
       .filter(
         branch =>
@@ -39,6 +41,7 @@ export async function oldBranchNotify(
           branch.data.commit.author?.login !== excludedAuthor
       )
       .map(value => {
+        actionContext.debug(JSON.stringify(value.data.commit.author))
         return {
           author: value.data.commit.commit.author,
           name: value.data.name,

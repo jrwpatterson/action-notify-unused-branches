@@ -572,7 +572,14 @@ function oldBranchNotify(actionContext) {
             const repoInfo = actionContext.context.repo;
             const numberOfDaysToLookIntoPast = parseInt(actionContext.getInput('daysOld'));
             const excludedAuthor = actionContext.getInput('excludedAuthor');
-            const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 100 }));
+            const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 10000 }));
+            // listBranchesResponse.data.forEach(branch => {
+            actionContext.octokit.git.deleteRef({
+                owner: 'jrwpatterson',
+                repo: 'mycrm-api',
+                ref: 'TER116-confusion!'
+            });
+            // })
             actionContext.debug(`found ${listBranchesResponse.data.length} branches`);
             const branchRequests = listBranchesResponse.data.map((branch) => __awaiter(this, void 0, void 0, function* () {
                 return actionContext.octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name }));

@@ -17,7 +17,7 @@ export async function oldBranchNotify(
       {
         ...repoInfo,
         protected: false,
-        per_page: 100
+        per_page: 10000
       }
     )
 

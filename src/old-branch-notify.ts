@@ -22,7 +22,7 @@ export async function oldBranchNotify(
     )
 
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
-
+    actionContext.debug(`starting to get teh data`)
     const branchRequests = listBranchesResponse.data.map(async branch =>
       actionContext.octokit.repos.getBranch({
         ...repoInfo,

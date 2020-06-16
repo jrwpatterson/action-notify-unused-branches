@@ -22,15 +22,13 @@ export async function oldBranchNotify(
     )
 
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
-    actionContext.debug(`starting to get the data`)
+
     const branchRequests = listBranchesResponse.data.map(async branch =>
       actionContext.octokit.repos.getBranch({
         ...repoInfo,
         branch: branch.name
       })
     )
-
-    actionContext.debug(`branchRequests ${branchRequests.length} branches`)
 
     const branchExtraInfo = await Promise.all(branchRequests)
     actionContext.debug(`starting branch with author`)
@@ -41,7 +39,6 @@ export async function oldBranchNotify(
           branch.data.commit.author?.login !== excludedAuthor
       )
       .map(value => {
-        actionContext.debug(JSON.stringify(value.data.commit.author))
         return {
           author: value.data.commit.commit.author,
           name: value.data.name,

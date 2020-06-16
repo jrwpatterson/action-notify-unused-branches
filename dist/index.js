@@ -574,11 +574,9 @@ function oldBranchNotify(actionContext) {
             const excludedAuthor = actionContext.getInput('excludedAuthor');
             const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 100 }));
             actionContext.debug(`found ${listBranchesResponse.data.length} branches`);
-            actionContext.debug(`starting to get the data`);
             const branchRequests = listBranchesResponse.data.map((branch) => __awaiter(this, void 0, void 0, function* () {
                 return actionContext.octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name }));
             }));
-            actionContext.debug(`branchRequests ${branchRequests.length} branches`);
             const branchExtraInfo = yield Promise.all(branchRequests);
             actionContext.debug(`starting branch with author`);
             const branchWithAuthor = branchExtraInfo
@@ -589,7 +587,6 @@ function oldBranchNotify(actionContext) {
             })
                 .map(value => {
                 var _a;
-                actionContext.debug(JSON.stringify(value.data.commit.author));
                 return {
                     author: value.data.commit.commit.author,
                     name: value.data.name,

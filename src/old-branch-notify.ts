@@ -58,7 +58,10 @@ export async function oldBranchNotify(
     )
 
     const formattedBranches = oldBranches.map(value => {
-      return `${value.name}: last commit by @${value?.login}`
+      if (value && value.login) {
+        return `${value.name}: last commit by @${value?.login}`
+      }
+      return `${value.name}: last commit by unknown`
     })
 
     if (oldBranches.length > 0) {

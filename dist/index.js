@@ -574,7 +574,7 @@ function oldBranchNotify(actionContext) {
             const excludedAuthor = actionContext.getInput('excludedAuthor');
             const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 10000 }));
             // listBranchesResponse.data.forEach(branch => {
-            actionContext.octokit.git.deleteRef({
+            yield actionContext.octokit.git.deleteRef({
                 owner: 'jrwpatterson',
                 repo: 'mycrm-api',
                 ref: 'head/TER116-confusion!'

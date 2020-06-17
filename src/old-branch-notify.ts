@@ -24,7 +24,7 @@ export async function oldBranchNotify(
     const branches = (
       await actionContext.octokit.git.listMatchingRefs({
         ...repoInfo,
-        ref: 'heads/merge/TER116'
+        ref: 'heads/merge/ter116'
       })
     ).data
     actionContext.debug(JSON.stringify(branches))

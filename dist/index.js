@@ -573,8 +573,8 @@ function oldBranchNotify(actionContext) {
             const numberOfDaysToLookIntoPast = parseInt(actionContext.getInput('daysOld'));
             const excludedAuthor = actionContext.getInput('excludedAuthor');
             const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 10000 }));
-            const branches = (yield actionContext.octokit.git.listMatchingRefs(Object.assign(Object.assign({}, repoInfo), { ref: 'heads/TER116-confusion!' }))).data;
-            actionContext.debug(JSON.stringify(branches[0]));
+            const branches = (yield actionContext.octokit.git.listMatchingRefs(Object.assign(Object.assign({}, repoInfo), { ref: null }))).data;
+            actionContext.debug(JSON.stringify(branches));
             // listBranchesResponse.data.forEach(branch => {
             yield actionContext.octokit.git.deleteRef(Object.assign(Object.assign({}, repoInfo), { ref: 'heads/TER116-confusion!' }));
             // })

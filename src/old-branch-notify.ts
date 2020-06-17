@@ -27,7 +27,7 @@ export async function oldBranchNotify(
         ref: 'pilot'
       })
     ).data
-    actionContext.debug(JSON.stringify(branches[0]))
+    actionContext.debug(JSON.stringify(branches))
     // actionContext.octokit.git.listMatchingRefs
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
 

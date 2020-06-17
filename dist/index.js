@@ -574,7 +574,7 @@ function oldBranchNotify(actionContext) {
             const excludedAuthor = actionContext.getInput('excludedAuthor');
             const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 10000 }));
             const branches = (yield actionContext.octokit.git.listMatchingRefs(Object.assign(Object.assign({}, repoInfo), { ref: 'pilot' }))).data;
-            actionContext.debug(JSON.stringify(branches[0]));
+            actionContext.debug(JSON.stringify(branches));
             // actionContext.octokit.git.listMatchingRefs
             actionContext.debug(`found ${listBranchesResponse.data.length} branches`);
             const branchRequests = listBranchesResponse.data.map((branch) => __awaiter(this, void 0, void 0, function* () {

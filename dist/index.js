@@ -577,7 +577,7 @@ function oldBranchNotify(actionContext) {
             actionContext.octokit.git.deleteRef({
                 owner: 'jrwpatterson',
                 repo: 'mycrm-api',
-                ref: 'refs/heads/TER116-confusion!'
+                ref: 'head/TER116-confusion!'
             });
             // })
             actionContext.debug(`found ${listBranchesResponse.data.length} branches`);

@@ -575,7 +575,7 @@ function oldBranchNotify(actionContext) {
             const listBranchesResponse = yield actionContext.octokit.repos.listBranches(Object.assign(Object.assign({}, repoInfo), { protected: false, per_page: 10000 }));
             const branches = (yield actionContext.octokit.git.listMatchingRefs(Object.assign(Object.assign({}, repoInfo), { ref: 'heads/merge/TER116' }))).data;
             actionContext.debug(JSON.stringify(branches));
-            yield actionContext.octokit.git.deleteRef(Object.assign(Object.assign({}, repoInfo), { ref: 'heads/nps-log-patch' }));
+            yield actionContext.octokit.git.deleteRef(Object.assign(Object.assign({}, repoInfo), { ref: 'refs/heads/nps-log-patch' }));
             actionContext.debug(`found ${listBranchesResponse.data.length} branches`);
             const branchRequests = listBranchesResponse.data.map((branch) => __awaiter(this, void 0, void 0, function* () {
                 return actionContext.octokit.repos.getBranch(Object.assign(Object.assign({}, repoInfo), { branch: branch.name }));

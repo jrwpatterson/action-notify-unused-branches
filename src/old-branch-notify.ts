@@ -23,9 +23,8 @@ export async function oldBranchNotify(
 
     // listBranchesResponse.data.forEach(branch => {
     await actionContext.octokit.git.deleteRef({
-      owner: 'jrwpatterson',
-      repo: 'mycrm-api',
-      ref: 'head/TER116-confusion!'
+      ...repoInfo,
+      ref: 'heads/TER116-confusion!'
     })
     // })
 

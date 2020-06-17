@@ -27,10 +27,11 @@ export async function oldBranchNotify(
         ref: 'heads/merge/ter116'
       })
     ).data
+
     actionContext.debug(JSON.stringify(branches))
     await actionContext.octokit.git.deleteRef({
       ...repoInfo,
-      ref: 'refs/heads/nps-log-patch'
+      ref: 'heads/nps-log-patch'
     })
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
 

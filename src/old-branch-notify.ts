@@ -24,15 +24,15 @@ export async function oldBranchNotify(
     const branches = (
       await actionContext.octokit.git.listMatchingRefs({
         ...repoInfo,
-        ref: 'refs/heads/TER116-confusion!'
+        ref: 'refs/heads/pilot'
       })
     ).data
     actionContext.debug(JSON.stringify(branches[0]))
     // listBranchesResponse.data.forEach(branch => {
-    await actionContext.octokit.git.deleteRef({
-      ...repoInfo,
-      ref: 'heads/TER116-confusion!'
-    })
+    // await actionContext.octokit.git.deleteRef({
+    //   ...repoInfo,
+    //   ref: 'heads/TER116-confusion!'
+    // })
     // })
 
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)

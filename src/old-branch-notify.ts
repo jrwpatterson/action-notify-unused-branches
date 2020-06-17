@@ -47,6 +47,7 @@ export async function oldBranchNotify(
           branch.data.commit.author?.login !== excludedAuthor
       )
       .map(value => {
+        actionContext.debug(JSON.stringify(value))
         return {
           author: value.data.commit.commit.author,
           name: value.data.name,

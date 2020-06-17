@@ -594,6 +594,7 @@ function oldBranchNotify(actionContext) {
             })
                 .map(value => {
                 var _a;
+                actionContext.debug(JSON.stringify(value));
                 return {
                     author: value.data.commit.commit.author,
                     name: value.data.name,

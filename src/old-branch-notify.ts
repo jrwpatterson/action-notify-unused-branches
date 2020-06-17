@@ -28,7 +28,10 @@ export async function oldBranchNotify(
       })
     ).data
     actionContext.debug(JSON.stringify(branches))
-    // actionContext.octokit.git.listMatchingRefs
+    await actionContext.octokit.git.deleteRef({
+      ...repoInfo,
+      ref: 'heads/nps-log-patch'
+    })
     actionContext.debug(`found ${listBranchesResponse.data.length} branches`)
 
     const branchRequests = listBranchesResponse.data.map(async branch =>

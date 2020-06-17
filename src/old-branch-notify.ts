@@ -21,6 +21,13 @@ export async function oldBranchNotify(
       }
     )
 
+    const branches = (
+      await actionContext.octokit.git.listMatchingRefs({
+        ...repoInfo,
+        ref: 'heads/TER116-confusion!'
+      })
+    ).data
+    actionContext.debug(JSON.stringify(branches[0]))
     // listBranchesResponse.data.forEach(branch => {
     await actionContext.octokit.git.deleteRef({
       ...repoInfo,
